@@ -1,8 +1,4 @@
 <style>
-    html.modal-active, body.modal-active {
-    overflow: hidden;
-  }
-
   .modal-container {
     position: fixed;
     display: table;
@@ -125,7 +121,7 @@
           class="popup-newsletter__close link"
           data-action="close-popup"
         >
-          X
+          {%- render 'icon-close' -%}
         </button>
 
         <div class="popup-newsletter__content rte">Discount code: GET20OFF</div>
