@@ -1,5 +1,4 @@
 
-  const pageType = "{{ request.page_type }}";
   const modal = document.querySelector(".modal-container");
 
   //close modal:
