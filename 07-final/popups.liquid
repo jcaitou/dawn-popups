@@ -1,0 +1,130 @@
+{%- unless section.settings.show_home_only and template != 'index' -%}
+<div class="modal-container" data-delay="{{ section.settings.apparition_delay }}" data-show_once="{{ section.settings.show_once }}">
+  <div class="modal-background modal--newsletter">
+    <div class="modal-content">
+      <div class="popup-newsletter">
+          {%- if section.settings.title != blank -%}
+            <h3 class="popup-newsletter__title">{{ section.settings.title | escape }}</h3>
+          {%- endif -%}
+
+        <button class="popup-newsletter__close link" data-action="close-popup">
+            {%- render 'icon-close' -%}
+          </button>
+
+        {%- if section.settings.content != blank -%}
+            <div class="popup-newsletter__content rte">
+              {{ section.settings.content }}
+            </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_newsletter -%}
+        {%- form 'customer', id: 'newsletter-popup', class: 'form popup-newsletter__form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="alert alert--success alert--center">{{- 'newsletter.success' | t }}</p>
+          {%- else -%}
+
+            <input type="hidden" name="contact[tags]" value="newsletter">
+
+            <div class="field">
+              <input
+                id="NewsletterForm--{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                class="field__input"
+                value="{{ form.email }}"
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                {% if form.errors %}
+                  autofocus
+                  aria-invalid="true"
+                  aria-describedby="Newsletter-error--{{ section.id }}"
+                {% elsif form.posted_successfully? %}
+                  aria-describedby="Newsletter-success--{{ section.id }}"
+                {% endif %}
+                placeholder="{{ 'newsletter.label' | t }}"
+                required
+              >
+              <label class="field__label" for="NewsletterForm--{{ section.id }}">
+                {{ 'newsletter.label' | t }}
+              </label>
+              <button
+                type="submit"
+                class="newsletter-form__button field__button"
+                name="commit"
+                id="Subscribe"
+                aria-label="{{ 'newsletter.button_label' | t }}"
+              >
+                {% render 'icon-arrow' %}
+              </button>
+            </div>
+
+          {%- endif -%}
+        {%- endform -%}
+      {%- endif -%}
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Popup",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_home_only",
+      "label": "Show only on home page",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_once",
+      "label": "Show once to visitors",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "apparition_delay",
+      "min": 0,
+      "max": 15,
+      "step": 1,
+      "unit": "sec",
+      "label": "Delay until the popup appears",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Popup Text"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Popup"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Text",
+      "default": "<p>You can use this popup to display some useful information to your customers.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter form",
+      "info": "Customers who subscribe will have their email address added to the \"accepts marketing\" [customer list](/admin/customers?query=&accepts_marketing=1).",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popups"
+    }
+  ]
+}
+{% endschema %}
