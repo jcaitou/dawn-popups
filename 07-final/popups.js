@@ -1,5 +1,12 @@
 
-  const modal = document.querySelector(".modal-container");
+<script>
+  const pageType = "{{ request.page_type }}";
+</script>
+
+<script src="{{ 'popups.js' | asset_url }}" defer="defer"></script>
+{{ 'popups.css' | asset_url | stylesheet_tag }}
+
+const modal = document.querySelector(".modal-container");
 
   //close modal:
     modal.addEventListener("click", (event) => {
