@@ -1,0 +1,197 @@
+<style>
+    html.modal-active, body.modal-active {
+    overflow: hidden;
+  }
+
+  .modal-container {
+    position: fixed;
+    display: table;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    transform: scale(0);
+    z-index: 5;
+  }
+
+  .modal-container.modal-animation {
+    transform: scale(1);
+  }
+  .modal-container.modal-animation .modal-background {
+    background: rgba(0, 0, 0, 0);
+    animation: fadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+  .modal-container.modal-animation .modal-background .modal-content {
+    opacity: 0;
+    animation: scaleUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+  .modal-container.modal-animation.out {
+    animation: quickScaleDown 0s 0.5s linear forwards;
+  }
+  .modal-container.modal-animation.out .modal-background {
+    animation: fadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+  .modal-container.modal-animation.out .modal-background .modal-content {
+    animation: scaleDown 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+  }
+
+  .modal-container .modal-background {
+    display: table-cell;
+    background: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    vertical-align: middle;
+  }
+  .modal-container .modal-background .modal-content {
+    background: white;
+    padding: 50px;
+    display: inline-block;
+    border-radius: 3px;
+    font-weight: 300;
+    position: relative;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      background: rgba(0, 0, 0, 0);
+    }
+    100% {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+  @keyframes fadeOut {
+    0% {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    100% {
+      background: rgba(0, 0, 0, 0);
+    }
+  }
+  @keyframes scaleUp {
+    0% {
+      transform: scale(0.8) translateY(1000px);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1) translateY(0px);
+      opacity: 1;
+    }
+  }
+  @keyframes scaleDown {
+    0% {
+      transform: scale(1) translateY(0px);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(0.8) translateY(1000px);
+      opacity: 0;
+    }
+  }
+  @keyframes scaleBack {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.85);
+    }
+  }
+  @keyframes scaleForward {
+    0% {
+      transform: scale(0.85);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes quickScaleDown {
+    0% {
+      transform: scale(1);
+    }
+    99.9% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0);
+    }
+  }
+</style>
+
+<div class="modal-container">
+  <div class="modal-background modal--newsletter">
+    <div class="modal-content">
+      <div class="popup-newsletter">
+                  {%- if section.settings.title != blank -%}
+            <h3 class="popup-newsletter__title heading">{{ section.settings.title | escape }}</h3>
+          {%- endif -%}
+
+        <button class="popup-newsletter__close link" data-action="close-popup" aria-label="{{ 'general.accessibility.close' | t }}">
+            {%- render 'icon-close' -%}
+          </button>
+
+        {%- if section.settings.content != blank -%}
+            <div class="popup-newsletter__content rte">
+              {{ section.settings.content }}
+            </div>
+          {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+  const modal = document.querySelector(".modal-container");
+
+  //close modal:
+      modal.addEventListener("click", (event) => {
+      const modalContent = event.target.querySelector(".modal-content");
+      const exitButton = event.target.closest("[data-action='close-popup']");
+        console.log(modalContent);
+
+      if (exitButton || modalContent) {
+        //we clicked outside the modal, so we should close the modal
+        modal.classList.add("out");
+      }
+    });
+
+//open modal:
+window.addEventListener("load", (event) => {
+  if (modal) {
+    openPopup(modal);
+  }
+});
+
+function openPopup(element) {
+  modal.classList.remove("modal-animation","out");
+  modal.classList.add("modal-animation");
+}
+</script>
+
+{% schema %}
+{
+  "name": "Popup-simple",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Popup Text"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Popup"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Text",
+      "default": "<p>You can use this popup to display some useful information to your customers.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popup-simple"
+    }
+  ]
+}
+{% endschema %}
